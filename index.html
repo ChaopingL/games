@@ -415,6 +415,7 @@
     <div class="modal">
       <h3>积分商店</h3>
       <p style="font-size:0.9rem;color:var(--muted);margin-bottom:10px;">当前积分：<span id="shop-pts">0</span></p>
+      <p id="shop-feedback" role="status" aria-live="polite" style="display:none;margin:8px 0;padding:10px 12px;border-radius:12px;background:#fff0f3;color:#b4234d;font-weight:700;"></p>
       <div id="shop-list"></div>
       <button class="btn btn-secondary" style="margin-top:12px;" onclick="closeModal('modal-shop')">关闭</button>
     </div>
@@ -445,6 +446,13 @@
         { title: "热身 · 耳边坦白", desc: "贴在{target}耳边，说三句你现在想被怎么对待的话。", pts: 1 },
         { title: "热身 · 任摸大腿", desc: "站好或坐好不要躲，让{target}从你的膝盖摸到大腿根附近 30 秒（先不碰最敏感处）。", pts: 1, sec: 30 },
         { title: "热身 · 献上锁骨", desc: "自己把锁骨和脖子露出，让{target}亲吻或舔 20 秒，你不能推开。", pts: 1, sec: 20 },
+        { title: "热身 · 眼神挑战", desc: "和{target}面对面保持眼神接触 20 秒，先笑出来的人要说一句甜蜜情话。", pts: 1, sec: 20 },
+        { title: "热身 · 三个优点", desc: "看着{target}的眼睛，说出对方三个你真心喜欢的优点。", pts: 1 },
+        { title: "热身 · 额头亲亲", desc: "主动给{target}一个额头吻，再拥抱 15 秒。", pts: 1, sec: 15 },
+        { title: "热身 · 心动回忆", desc: "告诉{target}你们第一次心动或印象最深刻的一个瞬间。", pts: 1 },
+        { title: "热身 · 甜蜜昵称", desc: "给{target}临时起一个可爱的昵称，并用这个昵称说一句情话。", pts: 1 },
+        { title: "热身 · 同步呼吸", desc: "和{target}面对面牵手，尝试一起缓慢呼吸 20 秒。", pts: 1, sec: 20 },
+        { title: "热身 · 选择题", desc: "问{target}一个轻松的二选一恋爱问题，并认真听完答案。", pts: 1 },
       ],
       warm: [
         { title: "升温 · 蒙眼受抚", desc: "你戴上眼罩，双手可以轻握，让{target}在你全身缓慢抚摸 50 秒（可经过{self_chest}和大腿内侧）。", pts: 2, sec: 50 },
@@ -453,6 +461,16 @@
         { title: "升温 · 主动磨蹭", desc: "你跨坐在{target}身上（可隔着衣服），自己主动对准磨蹭 30 秒，并说出你的感受。", pts: 2, sec: 30 },
         { title: "升温 · 手动侍奉", desc: "你对{target}{hand}，持续 40 秒；过程中要叫TA的名字（已启用称呼则用称呼）。", pts: 2, sec: 40 },
         { title: "升温 · 隔衣承道具", desc: "你自己把跳蛋或震动玩具隔着内衣按在自己的{self_genitals}上 35 秒，尽量忍住不叫出声。", pts: 2, sec: 35 },
+        { title: "升温 · 按摩放松", desc: "为{target}选择肩膀或手部，认真按摩 45 秒，并问对方力度是否舒服。", pts: 2, sec: 45 },
+        { title: "升温 · 悄悄话", desc: "贴近{target}耳边说一句让对方心动的话，然后拥抱 20 秒。", pts: 2, sec: 20 },
+        { title: "升温 · 亲吻地图", desc: "让{target}选择额头、脸颊或手背，你在选定位置轻轻亲吻三次。", pts: 2 },
+        { title: "升温 · 赞美接力", desc: "你和{target}轮流说出对方一个喜欢的地方，各说三轮，不能重复。", pts: 2 },
+        { title: "升温 · 慢舞时刻", desc: "播放一段喜欢的音乐，和{target}贴近慢舞 40 秒。", pts: 2, sec: 40 },
+        { title: "升温 · 心愿交换", desc: "各自说出一个希望下次约会一起完成的小心愿，并选一个先安排。", pts: 2 },
+        { title: "升温 · 牵手不放", desc: "牵着{target}的手保持 30 秒，同时说出一件最近感谢对方的事。", pts: 2, sec: 30 },
+        { title: "升温 · 温柔指令", desc: "请{target}选择一个舒服的拥抱方式，保持 30 秒；双方都可以随时调整。", pts: 2, sec: 30 },
+        { title: "升温 · 私密自我抚慰", desc: "在对方明确同意且双方都感到自在的前提下，在对方面前进行一段自我抚慰，时长由双方事先商定；任何一方都可以随时暂停。", pts: 2, sec: 30 },
+        { title: "升温 · 盲猜心情", desc: "闭上眼听{target}说一句话，猜对方此刻的心情，再问问猜得准不准。", pts: 2 },
       ],
       hot: [
         { title: "高热 · 蒙眼承刺激", desc: "你戴上眼罩（可加耳机），双手被简单束缚；让{target}用手指、嘴或道具刺激你的{self_genitals} 70 秒，你只能求，不能反抗。", pts: 3, sec: 70 },
@@ -464,7 +482,15 @@
         { title: "高热 · 边承受边说", desc: "在{target}刺激你的{self_genitals}时，你必须连续说出 5 句服从或求饶的话（有称呼则带上），说完对方才会停。", pts: 3, sec: 40 },
         { title: "高热 · 深入侍奉", desc: "按{target}的要求，用嘴或玩具更深入地侍奉对方至少 50 秒，中途不能擅自停下。", pts: 3, sec: 50 },
         { title: "高热 · 蒙眼口侍挑战", desc: "你戴上眼罩，只能用嘴找到{target}的私处，并为对方口交 3 分钟；过程中不能用手辅助寻找。", pts: 3, sec: 180 },
-        { title: "高热 · 足交侍奉", desc: "（女方挑战）用双脚夹住并摩擦对方的阴茎，足交至少 60 秒；可加油、看对方反应调整力度。", pts: 3, sec: 60, femaleOnly: true },
+        { title: "高热 · 深情告白", desc: "面对{target}认真说一段 30 秒的告白，至少包含一个具体的共同回忆。", pts: 3, sec: 30 },
+        { title: "高热 · 亲吻挑战", desc: "和{target}在双方都舒服的前提下亲吻 30 秒；任何一方想暂停都可以停下。", pts: 3, sec: 30 },
+        { title: "高热 · 专属情话", desc: "即兴说出三句只适合你们两人的情话，不能照搬刚才说过的内容。", pts: 3 },
+        { title: "高热 · 约会重演", desc: "重演一次你们最喜欢的约会片段，至少持续 45 秒。", pts: 3, sec: 45 },
+        { title: "高热 · 温柔按摩", desc: "询问{target}想被按摩的肩、手或背部位置，专注按摩 60 秒并根据反馈调整。", pts: 3, sec: 60 },
+        { title: "高热 · 心动问答", desc: "回答{target}提出的一个真诚恋爱问题；如果不想回答，可以换一个问题。", pts: 3 },
+        { title: "高热 · 未来约定", desc: "和{target}一起制定一个未来一周内能实现的小约会计划，并说出具体时间或方式。", pts: 3 },
+        { title: "高热 · 拥抱倒计时", desc: "和{target}拥抱 45 秒，期间轮流说出一个让你感到被爱的瞬间。", pts: 3, sec: 45 },
+        { title: "高热 · 专属舞步", desc: "为{target}跳一段即兴小舞，至少 30 秒；对方负责鼓掌和加油。", pts: 3, sec: 30 },
       ],
       // 起飞后：火热向惩罚（撞飞、放弃任务等）
       punish: [
@@ -474,6 +500,9 @@
         { title: "火热 · 边缘惩罚", desc: "被对方刺激到接近高潮时强制停止，并保持 20 秒不能自己触碰。", pts: 0, sec: 20 },
         { title: "火热 · 蒙眼被玩", desc: "戴上眼罩，让对方随意刺激你的{genitals} 40 秒，不能用手挡。", pts: 0, sec: 40 },
         { title: "火热 · 道具伺候", desc: "使用道具刺激对方或被对方用道具刺激 35 秒（由对方决定谁来承受）。", pts: 0, sec: 35 },
+        { title: "火热 · 甜蜜补偿", desc: "向{target}送上一个真诚的拥抱，并说出一件你愿意为对方做的小事。", pts: 0 },
+        { title: "火热 · 夸夸挑战", desc: "在 20 秒内连续说出{target}五个不同的优点。", pts: 0, sec: 20 },
+        { title: "火热 · 亲吻或拥抱", desc: "询问{target}想要亲吻还是拥抱，按对方选择完成 20 秒。", pts: 0, sec: 20 },
       ],
       chance: [
         { title: "机会卡 · 绝对指令", desc: "你获得一次「绝对指令权」：可以指定对方立刻做一件事（仅限一次）。", pts: 2 },
@@ -481,6 +510,9 @@
         { title: "机会卡 · 加码权", desc: "下一次对方执行任务时，你可以额外加一个小要求。", pts: 2 },
         { title: "机会卡 · 积分暴击", desc: "立刻获得 4 积分。", pts: 4 },
         { title: "机会卡 · 强制脱衣", desc: "对方必须立刻脱掉一件由你指定的衣服。", pts: 2 },
+        { title: "机会卡 · 甜蜜免单", desc: "立刻获得 2 积分。", pts: 2 },
+        { title: "机会卡 · 交换心愿", desc: "你和对方各说一个小心愿，选择其中一个本局完成。", pts: 2 },
+        { title: "机会卡 · 重掷好运", desc: "获得一次重掷骰子的机会（本次回合立即使用）。", pts: 2 },
       ],
       fate: [
         { title: "命运卡 · 强制高热", desc: "立刻随机执行一个高热任务。", pts: 2 },
@@ -488,6 +520,9 @@
         { title: "命运卡 · 临时称呼", desc: "接下来两回合，你必须使用对方指定的一个羞耻称呼来自称，并尽量在说话时带上。", pts: 1 },
         { title: "命运卡 · 全裸任务", desc: "立刻脱掉所有衣服，并接受对方一个升温级任务；任务结束后可以穿回。", pts: 2 },
         { title: "命运卡 · 强制服务", desc: "立刻用嘴或手为对方服务 30 秒。", pts: 2 },
+        { title: "命运卡 · 命运拥抱", desc: "和{target}拥抱 30 秒，并分享一件最近让你开心的事。", pts: 2, sec: 30 },
+        { title: "命运卡 · 交换角色", desc: "下一次选择任务时，由对方从可选任务类型中替你选择。", pts: 2 },
+        { title: "命运卡 · 小小惊喜", desc: "给{target}一个不花钱的小惊喜，可以是一句情话、一个拥抱或一段即兴表演。", pts: 2 },
       ],
       // 起飞前：预热向羞耻（未能起飞时）
       shame: [
@@ -496,7 +531,6 @@
         { title: "预热 · 蒙眼帮对方脱衣", desc: "戴上眼罩，靠触摸帮对方脱掉一件衣服；若脱错位置，由对方纠正后继续。", pts: 0, sec: 30 },
         { title: "预热 · 蒙眼找部位", desc: "戴上眼罩，在 20 秒内用手找到对方指定的一个身体部位（如锁骨、腰侧、大腿内侧等）并轻轻点一下。", pts: 0, sec: 20 },
         { title: "预热 · 展示身体", desc: "把衣服掀开或褪下，向对方展示自己的{self_chest} 15 秒，期间不能用手遮挡。", pts: 0, sec: 15 },
-        { title: "预热 · 展示私处", desc: "（女）用手轻轻分开阴唇，向对方展示小穴 15 秒；或（男）握住并展示自己的阴茎 15 秒。期间要看着对方。", pts: 0, sec: 15, femaleOnly: false },
         { title: "预热 · 被摸不能动", desc: "站好或坐好不要乱动，让对方在你身上（非最敏感部位）抚摸 25 秒，你不能推开。", pts: 0, sec: 25 },
         { title: "预热 · 舔手指", desc: "把对方的手指含进嘴里认真舔 15 秒，同时看着对方的眼睛。", pts: 0, sec: 15 },
         { title: "预热 · 隔衣轻蹭", desc: "隔着衣服，用身体轻轻磨蹭对方 20 秒，保持眼神接触。", pts: 0, sec: 20 },
@@ -504,7 +538,34 @@
         { title: "预热 · 主动湿吻", desc: "你主动吻上对方，做一次深入的湿吻，持续 30 秒，中途不要分开。", pts: 0, sec: 30 },
         { title: "预热 · 轻打屁股", desc: "趴好或弯腰，让对方在你屁股上拍打 10 下（力度由对方控制，保持轻微 SM）。每一下你都要报数。", pts: 0 },
         { title: "预热 · 掐脖深吻", desc: "让对方一只手轻轻掐住你的脖子（不要用力到影响呼吸），同时深吻 20 秒。", pts: 0, sec: 20 },
+        { title: "预热 · 说句喜欢", desc: "看着对方说一句你平时不太好意思说的喜欢或感谢。", pts: 0 },
+        { title: "预热 · 手心写字", desc: "在对方手心写一个字或画一个符号，让对方猜是什么。", pts: 0 },
+        { title: "预热 · 背后拥抱", desc: "从对方同意的方向轻轻抱住对方 15 秒。", pts: 0, sec: 15 },
+        { title: "预热 · 选首情歌", desc: "为对方选一首代表你们关系的歌，并解释为什么选它。", pts: 0 },
+        { title: "预热 · 猜猜我想要", desc: "说出一个此刻想要的温柔互动，让对方猜是什么；猜错可以给一次提示。", pts: 0 },
+        { title: "预热 · 脸颊亲亲", desc: "得到对方同意后，在脸颊上亲三下。", pts: 0 },
       ]
+    };
+
+    // 性别专属任务独立存放，不在同一张任务卡里混写男女两套描述。
+    // 通用任务仍保留在 TASKS；抽取时会按当前玩家的性别合并对应任务池。
+    const GENDER_TASKS = {
+      female: {
+        hot: [
+          { title: "高热 · 女方专属足部侍奉", desc: "在对方明确同意后，用双脚轻柔地刺激对方的私密部位 60 秒；随时确认对方是否舒服。", pts: 3, sec: 60 }
+        ],
+        shame: [
+          { title: "预热 · 女方专属展示", desc: "在对方同意后，选择舒服的姿势向对方展示自己的私密部位 15 秒；不想继续时可以随时暂停。", pts: 0, sec: 15 }
+        ]
+      },
+      male: {
+        hot: [
+          { title: "高热 · 男方专属节奏挑战", desc: "在双方同意的前提下，由你按照对方给出的节奏提示进行自我抚慰 30 秒；不舒服或不想继续时可以随时暂停。", pts: 3, sec: 30 }
+        ],
+        shame: [
+          { title: "预热 · 男方专属展示", desc: "在对方同意后，选择舒服的姿势向对方展示自己的私密部位 15 秒；不想继续时可以随时暂停。", pts: 0, sec: 15 }
+        ]
+      }
     };
 
     // 根据性别生成具体描述
@@ -543,7 +604,8 @@
       { id: "blind", name: "蒙眼支配", cost: 3, desc: "下个任务执行时，强制对方戴眼罩（仅任务期间）" },
       { id: "prop", name: "道具加强", cost: 4, desc: "下个任务必须加入道具" },
       { id: "protect", name: "积分保护", cost: 3, desc: "下次跳过不扣分" },
-      { id: "pushback", name: "强制倒退", cost: 10, desc: "强制对方飞机倒退 1～6 格（由你决定格数）" },
+      { id: "pushback", name: "强制倒退", cost: 10, desc: "随机让对方飞机倒退 1～6 格" },
+      { id: "doublepts", name: "甜蜜双倍积分卡", cost: 5, desc: "下一次完成任务时，获得双倍任务积分" },
       { id: "lingerie", name: "要求穿情趣内衣", cost: 3, desc: "仅男性可用：要求女方穿上情趣内衣（持续到游戏结束或换下）" },
     ];
 
@@ -643,6 +705,9 @@
       activeTitles: { p1: "", p2: "" },
       selfTitles: { p1: "", p2: "" },
       lingerie: { p1: false, p2: false },
+      doublePointsNext: { p1: false, p2: false },
+      completedTasks: {}, // 按任务标题记录完成次数，用于降低重复任务权重
+      recentTasks: [], // 最近抽取的任务，避免短时间重复
       timerId: null,
     };
 
@@ -668,6 +733,8 @@
         if (!d || d.version !== 2 || !d.state || !d.state.p1 || !d.state.p2) throw new Error("invalid save");
         if (state.timerId) clearInterval(state.timerId);
         state = { ...d.state, timerId: null };
+        state.completedTasks = state.completedTasks || {};
+        state.recentTasks = Array.isArray(state.recentTasks) ? state.recentTasks : [];
         state.canMove = false;
         $("p1-name").value = state.p1.name || "小红";
         $("p2-name").value = state.p2.name || "小蓝";
@@ -718,6 +785,9 @@
       state.activeTitles = { p1: "", p2: "" };
       state.selfTitles = { p1: "", p2: "" };
       state.lingerie = { p1: false, p2: false };
+      state.doublePointsNext = { p1: false, p2: false };
+      state.completedTasks = {};
+      state.recentTasks = [];
       if (state.timerId) { clearInterval(state.timerId); state.timerId = null; }
 
       $("label-p1").textContent = state.p1.name + (state.p1.gender === "male" ? " ♂" : " ♀");
@@ -728,6 +798,7 @@
       const g1 = state.p1.gender === "male" ? "男" : "女";
       const g2 = state.p2.gender === "male" ? "男" : "女";
       addLog(`游戏开始！${state.p1.name}（${g1}） vs ${state.p2.name}（${g2}）`);
+      addLog("任务抽取已启用去重权重：未完成任务优先，已完成任务降低出现概率 💗");
       $("screen-start").classList.remove("active");
       $("screen-game").classList.add("active");
     }
@@ -1098,6 +1169,32 @@
       }
     }
 
+    // 按完成次数和最近抽取记录加权：未完成过的任务优先，重复任务仍可能出现但概率更低。
+    function pickTaskWithPriority(list, excludeTitle = "") {
+      let pool = list.filter(t => t.title !== excludeTitle);
+      if (!pool.length) pool = list.slice();
+      if (pool.length > 4 && Array.isArray(state.recentTasks)) {
+        const fresh = pool.filter(t => !state.recentTasks.slice(-4).includes(t.title));
+        if (fresh.length >= Math.min(3, pool.length)) pool = fresh;
+      }
+      const weights = pool.map(t => {
+        const count = Number((state.completedTasks || {})[t.title] || 0);
+        return count === 0 ? 1 : count === 1 ? 0.28 : count === 2 ? 0.12 : 0.05;
+      });
+      const total = weights.reduce((a, b) => a + b, 0);
+      let roll = Math.random() * total;
+      let chosen = pool[pool.length - 1];
+      for (let i = 0; i < pool.length; i++) {
+        roll -= weights[i];
+        if (roll <= 0) { chosen = pool[i]; break; }
+      }
+      state.recentTasks = Array.isArray(state.recentTasks) ? state.recentTasks : [];
+      state.recentTasks.push(chosen.title);
+      state.recentTasks = state.recentTasks.slice(-8);
+      saveGame();
+      return chosen;
+    }
+
     function triggerTask(type) {
       const cur = state[state.current];
       if (cur.skipNext) {
@@ -1106,13 +1203,14 @@
         setTimeout(nextTurn, 500);
         return;
       }
-      let list = (TASKS[type] || TASKS.cool).slice();
-      // 男性不抽边缘类；女方限定任务仅女性可抽
-      if (cur.gender === "male") {
-        list = list.filter(t => !t.title.includes("边缘") && !t.femaleOnly);
-      }
-      if (list.length === 0) list = (TASKS[type] || TASKS.cool).filter(t => !t.femaleOnly || cur.gender === "female");
-      const task = list[Math.floor(Math.random() * list.length)];
+      // 通用池与对应性别专属池分开维护，再按当前玩家的性别组合抽取。
+      let list = (TASKS[type] || TASKS.cool).filter(t => !t.femaleOnly && !t.maleOnly).slice();
+      const genderPool = GENDER_TASKS[cur.gender] && GENDER_TASKS[cur.gender][type];
+      if (Array.isArray(genderPool)) list = list.concat(genderPool);
+      // 男性玩家过滤不适用的边缘类任务。
+      if (cur.gender === "male") list = list.filter(t => !t.title.includes("边缘"));
+      if (list.length === 0) list = (TASKS[type] || TASKS.cool).filter(t => !t.femaleOnly && !t.maleOnly);
+      const task = pickTaskWithPriority(list);
       const actorPid = state.current;
       const targetPid = state.current === "p1" ? "p2" : "p1";
       const desc = genderize(task.desc, actorPid, targetPid);
@@ -1122,7 +1220,7 @@
 
     function triggerCard(kind) {
       const list = TASKS[kind];
-      const task = list[Math.floor(Math.random() * list.length)];
+      const task = pickTaskWithPriority(list);
       const actorPid = state.current;
       const targetPid = state.current === "p1" ? "p2" : "p1";
       const desc = genderize(task.desc, actorPid, targetPid);
@@ -1137,7 +1235,7 @@
         pool = pool.filter(t => !t.title.includes("边缘"));
       }
       if (pool.length === 0) pool = TASKS.punish;
-      const task = pool[Math.floor(Math.random() * pool.length)];
+      const task = pickTaskWithPriority(pool);
       const actorPid = targetPid === "p1" ? "p2" : "p1";
       const desc = genderize(task.desc, actorPid, targetPid);
       const punishment = { ...task, type: "punish", target: targetPid, renderedDesc: desc };
@@ -1152,12 +1250,8 @@
     }
 
     function triggerShame(excludeTitle) {
-      let pool = TASKS.shame;
-      if (excludeTitle) {
-        pool = TASKS.shame.filter(t => t.title !== excludeTitle);
-        if (pool.length === 0) pool = TASKS.shame;
-      }
-      const task = pool[Math.floor(Math.random() * pool.length)];
+      const pool = TASKS.shame;
+      const task = pickTaskWithPriority(pool, excludeTitle || "");
       const targetPid = state.current;
       const actorPid = targetPid === "p1" ? "p2" : "p1";
       const desc = genderize(task.desc, actorPid, targetPid);
@@ -1251,8 +1345,16 @@
       const t = state.pendingTask;
       if (!t) { nextTurn(); return; }
       const p = state[t.target];
-      p.pts += t.pts || 0;
-      addLog(`${p.name} 完成了「${t.title}」${t.pts ? " +" + t.pts + "pt" : ""}`);
+      if (success && t.title && TASKS[t.type]) {
+        state.completedTasks = state.completedTasks || {};
+        state.completedTasks[t.title] = (state.completedTasks[t.title] || 0) + 1;
+      }
+      const basePoints = t.pts || 0;
+      const doubleActive = !!(state.doublePointsNext && state.doublePointsNext[t.target]);
+      const gainedPoints = doubleActive ? basePoints * 2 : basePoints;
+      p.pts += gainedPoints;
+      if (doubleActive && state.doublePointsNext) state.doublePointsNext[t.target] = false;
+      addLog(`${p.name} 完成了「${t.title}」${gainedPoints ? " +" + gainedPoints + "pt" : ""}${doubleActive ? "（双倍积分）" : ""}`);
       if (t.title.includes("免做")) p.skipNext = true;
       updateUI();
       state.pendingTask = null;
@@ -1345,6 +1447,8 @@
     function showShop() {
       const cur = state[state.current];
       $("shop-pts").textContent = cur.pts;
+      const feedback = $("shop-feedback");
+      if (feedback) { feedback.style.display = "none"; feedback.textContent = ""; }
 
       let html = `<div class="shop-section"><h4>特权道具</h4>`;
       html += SHOP_ITEMS.map(item => `
@@ -1371,9 +1475,22 @@
       $("modal-shop").classList.add("show");
     }
 
+    function showShopFeedback(message, kind = "error") {
+      const feedback = $("shop-feedback");
+      if (!feedback) { alert(message); return; }
+      feedback.textContent = message;
+      feedback.style.display = "block";
+      feedback.style.background = kind === "success" ? "#e9f9ef" : "#fff0f3";
+      feedback.style.color = kind === "success" ? "#17663a" : "#b4234d";
+      feedback.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    }
+
     function buyItem(id, cost) {
       const cur = state[state.current];
-      if (cur.pts < cost) { alert("积分不足"); return; }
+      if (cur.pts < cost) {
+        showShopFeedback(`积分不足！该道具需要 ${cost} 积分，你当前有 ${cur.pts} 积分，还差 ${cost - cur.pts} 积分。`, "error");
+        return;
+      }
 
       if (id === "pushback") {
         // 先检查对方飞机是否在场上
@@ -1383,9 +1500,19 @@
           alert("对方飞机不在场上（在基地或已到达终点），无法倒退");
           return;
         }
+        const steps = Math.floor(Math.random() * 6) + 1;
+        cur.pts -= cost;
+        const moved = forceBackPiece(oppKey, steps);
+        if (!moved) {
+          cur.pts += cost;
+          showShopFeedback("对方飞机当前无法倒退，未扣除积分。", "error");
+          return;
+        }
+        addLog(`🎲 ${cur.name} 使用「强制倒退」，${state[oppKey].name} 随机倒退 ${steps} 格！`);
+        updateUI();
         closeModal("modal-shop");
-        // 弹出选择 1-6 格
-        showPushbackSelect(cost);
+        renderPieces();
+        saveGame();
         return;
       }
 
@@ -1410,7 +1537,14 @@
       cur.pts -= cost;
       updateUI();
       if (id === "skip" || id === "protect") cur.skipNext = true;
-      addLog(`${cur.name} 兑换了特权`);
+      if (id === "doublepts") {
+        if (!state.doublePointsNext) state.doublePointsNext = { p1: false, p2: false };
+        state.doublePointsNext[state.current] = true;
+        addLog(`${cur.name} 兑换了「甜蜜双倍积分卡」：下次任务积分翻倍`);
+      } else {
+        addLog(`${cur.name} 兑换了特权`);
+      }
+      saveGame();
       closeModal("modal-shop");
     }
 
@@ -1476,7 +1610,10 @@
 
     function buyTitle(id, cost) {
       const cur = state[state.current];
-      if (cur.pts < cost) { alert("积分不足"); return; }
+      if (cur.pts < cost) {
+        showShopFeedback(`积分不足！该道具需要 ${cost} 积分，你当前有 ${cur.pts} 积分，还差 ${cost - cur.pts} 积分。`, "error");
+        return;
+      }
       const me = state.current;
       const opp = me === "p1" ? "p2" : "p1";
 
@@ -1517,6 +1654,7 @@
         addLog(`${state[opp].name} 的自称被规定为「${name}」`);
       }
       updateUI();
+      saveGame();
       closeModal("modal-shop");
     }
 
@@ -1531,7 +1669,7 @@
         4. 终点跑道点数超过会倒退；跑道格子全是高热<br>
         5. 可放弃任务：随机倒退1～3格并抽一张惩罚卡<br>
         6. 连续5次未起飞将保底起飞<br>
-        7. 积分可兑换特权和角色扮演称呼<br>
+        7. 积分可兑换特权、双倍积分卡和角色扮演称呼；强制倒退会随机倒退1～6格<br>
         8. 随时可用安全词停止<br><br>
         格子：温=升温 / 热=高热（已无热身格）<br>
         「温」=升温 「热」=高热 「→/←」=终点入口（已取消机会/命运卡）
