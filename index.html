@@ -334,7 +334,7 @@
       </p>
     </div>
 
-    <button class="btn btn-primary" onclick="startGame()">开始游戏 💗</button>
+    <button class="btn btn-primary" id="btn-start-game" type="button">开始游戏 💗</button>
     <button class="btn btn-secondary" id="btn-resume" onclick="resumeSavedGame()" style="display:none;margin-top:8px;">继续上次游戏</button>
   </div>
 
@@ -398,6 +398,9 @@
       <h3 id="task-title">任务</h3>
       <p id="task-desc"></p>
       <div id="task-timer" style="display:none;text-align:center;font-size:1.8rem;font-weight:700;color:var(--warning);margin:10px 0;">00</div>
+      <div style="display:flex;justify-content:center;margin:0 0 12px;">
+        <button class="btn btn-primary" id="btn-start-timer" onclick="startTaskTimer()" style="display:none;">▶ 开始计时</button>
+      </div>
       <p class="points-gain" id="task-points"></p>
       <div class="row" style="margin-top:4px;">
         <button class="btn btn-primary" onclick="completeTask(true)">完成任务</button>
@@ -1185,29 +1188,51 @@
         ? (canRedraw ? "起飞前预热羞耻：不能放弃，可重抽一次" : "已重抽过，必须完成此预热惩罚")
         : "放弃：随机倒退1～3格 + 抽一张火热惩罚卡";
 
-      // 计时器
+      // 计时器：展示任务时只准备倒计时，必须由玩家手动点击开始
       if (state.timerId) { clearInterval(state.timerId); state.timerId = null; }
       const timerEl = $("task-timer");
-      const sec = task.sec || 0;
+      const timerBtn = $("btn-start-timer");
+      const sec = Number(task.sec) || 0;
       if (sec > 0) {
-        let left = sec;
         timerEl.style.display = "block";
-        timerEl.textContent = left + "s";
-        state.timerId = setInterval(() => {
-          left--;
-          if (left <= 0) {
-            clearInterval(state.timerId);
-            state.timerId = null;
-            timerEl.textContent = "时间到";
-          } else {
-            timerEl.textContent = left + "s";
-          }
-        }, 1000);
+        timerEl.dataset.remaining = String(sec);
+        timerEl.textContent = `${sec} 秒`;
+        timerBtn.style.display = "inline-flex";
+        timerBtn.disabled = false;
+        timerBtn.textContent = "▶ 开始计时";
       } else {
         timerEl.style.display = "none";
+        timerEl.dataset.remaining = "0";
+        timerBtn.style.display = "none";
+        timerBtn.disabled = false;
       }
 
       $("modal-task").classList.add("show");
+    }
+
+    function startTaskTimer() {
+      const timerEl = $("task-timer");
+      const timerBtn = $("btn-start-timer");
+      const sec = Number(timerEl.dataset.remaining) || 0;
+      if (sec <= 0 || state.timerId || !state.pendingTask) return;
+
+      let left = sec;
+      timerBtn.disabled = true;
+      timerBtn.textContent = "计时进行中…";
+      timerEl.textContent = `${left} 秒`;
+      state.timerId = setInterval(() => {
+        left -= 1;
+        timerEl.dataset.remaining = String(Math.max(0, left));
+        if (left <= 0) {
+          clearInterval(state.timerId);
+          state.timerId = null;
+          timerEl.textContent = "时间到 💗";
+          timerBtn.textContent = "计时结束";
+          timerBtn.disabled = true;
+        } else {
+          timerEl.textContent = `${left} 秒`;
+        }
+      }, 1000);
     }
 
     function redrawShame() {
@@ -1221,6 +1246,7 @@
 
     function completeTask(success) {
       if (state.timerId) { clearInterval(state.timerId); state.timerId = null; }
+      $("btn-start-timer").disabled = false;
       closeModal("modal-task");
       const t = state.pendingTask;
       if (!t) { nextTurn(); return; }
@@ -1255,6 +1281,7 @@
         return;
       }
       if (state.timerId) { clearInterval(state.timerId); state.timerId = null; }
+      $("btn-start-timer").disabled = false;
       closeModal("modal-task");
       const pid = t.target;
       const p = state[pid];
@@ -1514,6 +1541,17 @@
 
     window.addEventListener("DOMContentLoaded", () => {
       const b = $("btn-resume"); if (b) b.style.display = hasSavedGame() ? "block" : "none";
+      const startButton = $("btn-start-game");
+      if (startButton) {
+        startButton.addEventListener("click", () => {
+          try {
+            startGame();
+          } catch (error) {
+            console.error("启动游戏失败：", error);
+            alert("游戏启动失败，请关闭后重新打开此 HTML 文件。如果仍然出现问题，请把这条提示告诉我。\n错误信息：" + (error && error.message ? error.message : error));
+          }
+        });
+      }
     });
 
     function confirmRestart() {
