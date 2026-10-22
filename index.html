@@ -141,6 +141,7 @@
     .cell.cool { background: #1a2a1a; }
     .cell.warm { background: #2a2a1a; }
     .cell.hot  { background: #2a1a1a; }
+    .cell.path { background: #1f1a24; }
     .cell.chance { background: #1a1a2e; color: #8af; font-weight: 700; }
     .cell.fate   { background: #2a1a2a; color: #f8a; font-weight: 700; }
     .cell.start-red  { background: rgba(255,77,109,0.25); border-color: var(--red); }
@@ -282,6 +283,7 @@
     .board { background:#fffafd; border-color:#efd9e5; box-shadow:0 10px 28px rgba(157,105,139,.12); }
     .cell { border-color:rgba(173,127,157,.15); color:rgba(90,65,82,.6); }
     .cell.cool { background:#e9f6ed; } .cell.warm { background:#fff3d9; } .cell.hot { background:#ffe5ec; }
+    .cell.path { background:#f7f0f5; }
     .cell.chance { background:#eaf2ff; color:#5a8bc5; } .cell.fate { background:#f4eaff; color:#a26cc0; }
     .cell.start-red,.cell.home-red { background:rgba(231,111,154,.25); border-color:var(--red); }
     .cell.start-blue,.cell.home-blue { background:rgba(123,184,232,.3); border-color:var(--blue); }
@@ -329,7 +331,7 @@
       <p style="font-size:0.85rem;color:var(--muted);">
         · 斜对角双人布局（类似传统飞行棋）<br>
         · 每人 1 架飞机；掷 6 起飞，否则抽羞耻惩罚卡<br>
-        · 外圈 → 彩色入口拐进终点跑道 → 中心终点<br>
+        · 外圈刺激度随离起点距离升高 → 终点跑道性爱姿势 → 中心终点终极任务<br>
         · 可放弃任务（倒退1～3格+惩罚卡）；连续5次未起飞保底起飞
       </p>
     </div>
@@ -439,58 +441,55 @@
     // {hand} 用手刺激对方  {penetrate} 插入/深入相关
     // {call} 称呼提示（已启用则用称呼，否则用名字）
     const TASKS = {
-      // 格子任务：挑战落子的人自己（你要完成/承受），不是让对方来服务你
+      // 仅保留刺激向任务（已去除甜蜜向）
       cool: [
-        { title: "热身 · 主动深吻", desc: "你主动叫{target}的名字（或称呼），然后强势深吻至少 25 秒；期间由你动手脱自己一件外衣。", pts: 1, sec: 25 },
+        { title: "热身 · 主动深吻脱衣", desc: "你主动强势深吻{target}至少 25 秒，期间脱自己一件外衣。", pts: 1, sec: 25 },
         { title: "热身 · 自己脱一件", desc: "在{target}面前自己脱掉一件衣服，并把脱下的衣服交给对方保管。", pts: 1 },
-        { title: "热身 · 耳边坦白", desc: "贴在{target}耳边，说三句你现在想被怎么对待的话。", pts: 1 },
-        { title: "热身 · 任摸大腿", desc: "站好或坐好不要躲，让{target}从你的膝盖摸到大腿根附近 30 秒（先不碰最敏感处）。", pts: 1, sec: 30 },
+        { title: "热身 · 耳边骚话", desc: "贴在{target}耳边，说三句你现在想对TA做的具体色色的事。", pts: 1 },
+        { title: "热身 · 任摸大腿", desc: "站好或坐好不要躲，让{target}从你的膝盖摸到大腿根附近 30 秒（（先不碰最敏感处）。", pts: 1, sec: 30 },
         { title: "热身 · 献上锁骨", desc: "自己把锁骨和脖子露出，让{target}亲吻或舔 20 秒，你不能推开。", pts: 1, sec: 20 },
-        { title: "热身 · 眼神挑战", desc: "和{target}面对面保持眼神接触 20 秒，先笑出来的人要说一句甜蜜情话。", pts: 1, sec: 20 },
-        { title: "热身 · 三个优点", desc: "看着{target}的眼睛，说出对方三个你真心喜欢的优点。", pts: 1 },
-        { title: "热身 · 额头亲亲", desc: "主动给{target}一个额头吻，再拥抱 15 秒。", pts: 1, sec: 15 },
-        { title: "热身 · 心动回忆", desc: "告诉{target}你们第一次心动或印象最深刻的一个瞬间。", pts: 1 },
-        { title: "热身 · 甜蜜昵称", desc: "给{target}临时起一个可爱的昵称，并用这个昵称说一句情话。", pts: 1 },
-        { title: "热身 · 同步呼吸", desc: "和{target}面对面牵手，尝试一起缓慢呼吸 20 秒。", pts: 1, sec: 20 },
-        { title: "热身 · 选择题", desc: "问{target}一个轻松的二选一恋爱问题，并认真听完答案。", pts: 1 },
       ],
       warm: [
-        { title: "升温 · 蒙眼受抚", desc: "你戴上眼罩，双手可以轻握，让{target}在你全身缓慢抚摸 50 秒（可经过{self_chest}和大腿内侧）。", pts: 2, sec: 50 },
+        { title: "升温 · 蒙眼受抚", desc: "你戴上眼罩，让{target}在你全身缓慢抚摸 50 秒（可经过{self_chest}和大腿内侧）。", pts: 2, sec: 50 },
         { title: "升温 · 口侍预热", desc: "你脱掉{target}的内裤，用嘴在对方{genitals}周围亲吻、舔舐 30 秒（先不深入）。", pts: 2, sec: 30 },
         { title: "升温 · 单手被缚", desc: "让{target}用丝带或手铐缚住你一只手，然后由对方亲吻并刺激你 40 秒，你不能挣脱。", pts: 2, sec: 40 },
         { title: "升温 · 主动磨蹭", desc: "你跨坐在{target}身上（可隔着衣服），自己主动对准磨蹭 30 秒，并说出你的感受。", pts: 2, sec: 30 },
-        { title: "升温 · 手动侍奉", desc: "你对{target}{hand}，持续 40 秒；过程中要叫TA的名字（已启用称呼则用称呼）。", pts: 2, sec: 40 },
+        { title: "升温 · 手动侍奉", desc: "你对{target}{hand}，持续 40 秒；过程中要叫TA的名字（有称呼则用称呼）。", pts: 2, sec: 40 },
         { title: "升温 · 隔衣承道具", desc: "你自己把跳蛋或震动玩具隔着内衣按在自己的{self_genitals}上 35 秒，尽量忍住不叫出声。", pts: 2, sec: 35 },
-        { title: "升温 · 按摩放松", desc: "为{target}选择肩膀或手部，认真按摩 45 秒，并问对方力度是否舒服。", pts: 2, sec: 45 },
-        { title: "升温 · 悄悄话", desc: "贴近{target}耳边说一句让对方心动的话，然后拥抱 20 秒。", pts: 2, sec: 20 },
-        { title: "升温 · 亲吻地图", desc: "让{target}选择额头、脸颊或手背，你在选定位置轻轻亲吻三次。", pts: 2 },
-        { title: "升温 · 赞美接力", desc: "你和{target}轮流说出对方一个喜欢的地方，各说三轮，不能重复。", pts: 2 },
-        { title: "升温 · 慢舞时刻", desc: "播放一段喜欢的音乐，和{target}贴近慢舞 40 秒。", pts: 2, sec: 40 },
-        { title: "升温 · 心愿交换", desc: "各自说出一个希望下次约会一起完成的小心愿，并选一个先安排。", pts: 2 },
-        { title: "升温 · 牵手不放", desc: "牵着{target}的手保持 30 秒，同时说出一件最近感谢对方的事。", pts: 2, sec: 30 },
-        { title: "升温 · 温柔指令", desc: "请{target}选择一个舒服的拥抱方式，保持 30 秒；双方都可以随时调整。", pts: 2, sec: 30 },
-        { title: "升温 · 私密自我抚慰", desc: "在对方明确同意且双方都感到自在的前提下，在对方面前进行一段自我抚慰，时长由双方事先商定；任何一方都可以随时暂停。", pts: 2, sec: 30 },
-        { title: "升温 · 盲猜心情", desc: "闭上眼听{target}说一句话，猜对方此刻的心情，再问问猜得准不准。", pts: 2 },
+        { title: "升温 · 私密自慰", desc: "在对方面前自我抚慰 40 秒；对方可以指挥节奏。", pts: 2, sec: 40 },
+        { title: "升温 · 脱到只剩内衣", desc: "当着对方的面脱到只剩内衣（或更少，由对方指定），并保持展示 15 秒。", pts: 2, sec: 15 },
       ],
+      // 高热：口交与非插入刺激（文案按对象性别区分；深喉仅对男方）
       hot: [
+        { title: "高热 · 主动口侍", desc: "你跪着或俯身，为{target}{oral_give}至少 60 秒；可按对方感受调整节奏。", pts: 3, sec: 60 },
+        { title: "高热 · 蒙眼口侍挑战", desc: "你戴上眼罩，只能用嘴找到{target}的私处并{oral_give} 3 分钟；尽量少用手辅助寻找。", pts: 3, sec: 180 },
+        { title: "高热 · 深喉尝试", desc: "为{target}口交并尽量含深吞吐，持续 60 秒；不舒服可敲对方示意放缓。", pts: 3, sec: 60, needMaleTarget: true },
+        { title: "高热 · 细致舔弄", desc: "用舌头仔细舔弄{target}的{genitals}至少 60 秒，按对方反应调整位置与力度。", pts: 3, sec: 60, needFemaleTarget: true },
+        { title: "高热 · 互口", desc: "69 姿势或轮流口交，合计至少 90 秒，双方都要被嘴照顾到。", pts: 3, sec: 90 },
+        { title: "高热 · 边口边摸", desc: "用嘴侍奉{target}的同时，手也配合刺激，持续 75 秒。", pts: 3, sec: 75 },
+        { title: "高热 · 命令口侍", desc: "完全按{target}的口令调整速度与方式，{oral_give} 90 秒，不得擅自停。", pts: 3, sec: 90 },
+        { title: "高热 · 投入口侍", desc: "按{target}的要求，用嘴认真侍奉对方至少 50 秒，中途不能擅自停下。", pts: 3, sec: 50 },
         { title: "高热 · 蒙眼承刺激", desc: "你戴上眼罩（可加耳机），双手被简单束缚；让{target}用手指、嘴或道具刺激你的{self_genitals} 70 秒，你只能求，不能反抗。", pts: 3, sec: 70 },
         { title: "高热 · 道具伺候对方", desc: "你使用跳蛋、震动棒或其他玩具，刺激或侍奉{target} 50 秒；过程中按对方的要求调整。", pts: 3, sec: 50 },
-        { title: "高热 · 主动口侍", desc: "你跪着或俯身，为{target}{oral_give}至少 60 秒；对方可以按着你的头引导节奏。", pts: 3, sec: 60 },
-        { title: "高热 · 体位承受", desc: "由{target}指定体位，你配合摆好；保持抽插或强烈刺激 45 秒，中途你不能要求换姿势。", pts: 3, sec: 45 },
         { title: "高热 · 边缘承受", desc: "让{target}把你的{self_genitals}刺激到接近高潮后停手 10 秒，重复两次；是否释放由对方决定。", pts: 3, sec: 30 },
         { title: "高热 · 先忍不住者", desc: "两人互相刺激，你必须尽量坚持；若你先出声或求饶，要额外接受对方一个小要求。", pts: 3, sec: 60 },
         { title: "高热 · 边承受边说", desc: "在{target}刺激你的{self_genitals}时，你必须连续说出 5 句服从或求饶的话（有称呼则带上），说完对方才会停。", pts: 3, sec: 40 },
-        { title: "高热 · 深入侍奉", desc: "按{target}的要求，用嘴或玩具更深入地侍奉对方至少 50 秒，中途不能擅自停下。", pts: 3, sec: 50 },
-        { title: "高热 · 蒙眼口侍挑战", desc: "你戴上眼罩，只能用嘴找到{target}的私处，并为对方口交 3 分钟；过程中不能用手辅助寻找。", pts: 3, sec: 180 },
-        { title: "高热 · 深情告白", desc: "面对{target}认真说一段 30 秒的告白，至少包含一个具体的共同回忆。", pts: 3, sec: 30 },
-        { title: "高热 · 亲吻挑战", desc: "和{target}在双方都舒服的前提下亲吻 30 秒；任何一方想暂停都可以停下。", pts: 3, sec: 30 },
-        { title: "高热 · 专属情话", desc: "即兴说出三句只适合你们两人的情话，不能照搬刚才说过的内容。", pts: 3 },
-        { title: "高热 · 约会重演", desc: "重演一次你们最喜欢的约会片段，至少持续 45 秒。", pts: 3, sec: 45 },
-        { title: "高热 · 温柔按摩", desc: "询问{target}想被按摩的肩、手或背部位置，专注按摩 60 秒并根据反馈调整。", pts: 3, sec: 60 },
-        { title: "高热 · 心动问答", desc: "回答{target}提出的一个真诚恋爱问题；如果不想回答，可以换一个问题。", pts: 3 },
-        { title: "高热 · 未来约定", desc: "和{target}一起制定一个未来一周内能实现的小约会计划，并说出具体时间或方式。", pts: 3 },
-        { title: "高热 · 拥抱倒计时", desc: "和{target}拥抱 45 秒，期间轮流说出一个让你感到被爱的瞬间。", pts: 3, sec: 45 },
-        { title: "高热 · 专属舞步", desc: "为{target}跳一段即兴小舞，至少 30 秒；对方负责鼓掌和加油。", pts: 3, sec: 30 },
+        { title: "高热 · 强制全裸", desc: "立刻脱光，保持全裸直到本回合结束；对方可以随意触摸 30 秒。", pts: 3, sec: 30 },
+      ],
+      // 终点跑道：仅插入式体位任务
+      sex: [
+        { title: "跑道 · 传教士", desc: "摆出传教士体位，保持抽插 90 秒，中途不可换姿势。", pts: 4, sec: 90 },
+        { title: "跑道 · 后入式", desc: "摆出后入体位，保持抽插 90 秒；节奏可由被进入方要求调整。", pts: 4, sec: 90 },
+        { title: "跑道 · 骑乘式", desc: "由你骑乘，主动上下 90 秒。", pts: 4, sec: 90 },
+        { title: "跑道 · 侧卧抱入", desc: "侧躺插入，缓慢抽送 75 秒。", pts: 4, sec: 75 },
+        { title: "跑道 · 观音坐莲", desc: "面对面坐姿插入，研磨或轻抽 90 秒。", pts: 4, sec: 90 },
+        { title: "跑道 · 抬腿深入", desc: "传教士抬腿深入抽插 75 秒。", pts: 4, sec: 75 },
+        { title: "跑道 · 俯卧位", desc: "一方趴下，另一方从后方进入，保持抽插 90 秒。", pts: 4, sec: 90 },
+        { title: "跑道 · 背靠坐入", desc: "对方坐在你腿上背对你，由你托住对方上下 90 秒。", pts: 4, sec: 90 },
+        { title: "跑道 · 站立抱入", desc: "站立或半靠插入抽插 75 秒（注意支撑与安全）。", pts: 4, sec: 75 },
+        { title: "跑道 · 自由体位", desc: "由{target}指定一体位，保持抽插 60 秒。", pts: 4, sec: 60 },
+        { title: "跑道 · 慢速深插", desc: "任选一体位，只允许极慢、极深的抽送 90 秒，禁止快速冲刺。", pts: 4, sec: 90 },
+        { title: "跑道 · 指定体位承受", desc: "由{target}指定体位，你配合摆好；保持抽插 90 秒，中途不能要求换姿势。", pts: 4, sec: 90 },
       ],
       // 起飞后：火热向惩罚（撞飞、放弃任务等）
       punish: [
@@ -500,71 +499,63 @@
         { title: "火热 · 边缘惩罚", desc: "被对方刺激到接近高潮时强制停止，并保持 20 秒不能自己触碰。", pts: 0, sec: 20 },
         { title: "火热 · 蒙眼被玩", desc: "戴上眼罩，让对方随意刺激你的{genitals} 40 秒，不能用手挡。", pts: 0, sec: 40 },
         { title: "火热 · 道具伺候", desc: "使用道具刺激对方或被对方用道具刺激 35 秒（由对方决定谁来承受）。", pts: 0, sec: 35 },
-        { title: "火热 · 甜蜜补偿", desc: "向{target}送上一个真诚的拥抱，并说出一件你愿意为对方做的小事。", pts: 0 },
-        { title: "火热 · 夸夸挑战", desc: "在 20 秒内连续说出{target}五个不同的优点。", pts: 0, sec: 20 },
-        { title: "火热 · 亲吻或拥抱", desc: "询问{target}想要亲吻还是拥抱，按对方选择完成 20 秒。", pts: 0, sec: 20 },
+        { title: "火热 · 打屁股报数", desc: "趴好，让对方打屁股 15 下，每一下大声报数。", pts: 0 },
       ],
-      chance: [
-        { title: "机会卡 · 绝对指令", desc: "你获得一次「绝对指令权」：可以指定对方立刻做一件事（仅限一次）。", pts: 2 },
-        { title: "机会卡 · 免做金牌", desc: "下一次抽到的任务可以免做，且不扣分。", pts: 1 },
-        { title: "机会卡 · 加码权", desc: "下一次对方执行任务时，你可以额外加一个小要求。", pts: 2 },
-        { title: "机会卡 · 积分暴击", desc: "立刻获得 4 积分。", pts: 4 },
-        { title: "机会卡 · 强制脱衣", desc: "对方必须立刻脱掉一件由你指定的衣服。", pts: 2 },
-        { title: "机会卡 · 甜蜜免单", desc: "立刻获得 2 积分。", pts: 2 },
-        { title: "机会卡 · 交换心愿", desc: "你和对方各说一个小心愿，选择其中一个本局完成。", pts: 2 },
-        { title: "机会卡 · 重掷好运", desc: "获得一次重掷骰子的机会（本次回合立即使用）。", pts: 2 },
-      ],
-      fate: [
-        { title: "命运卡 · 强制高热", desc: "立刻随机执行一个高热任务。", pts: 2 },
-        { title: "命运卡 · 道具强制", desc: "必须使用道具，完成对方指定的 40 秒刺激。", pts: 2 },
-        { title: "命运卡 · 临时称呼", desc: "接下来两回合，你必须使用对方指定的一个羞耻称呼来自称，并尽量在说话时带上。", pts: 1 },
-        { title: "命运卡 · 全裸任务", desc: "立刻脱掉所有衣服，并接受对方一个升温级任务；任务结束后可以穿回。", pts: 2 },
-        { title: "命运卡 · 强制服务", desc: "立刻用嘴或手为对方服务 30 秒。", pts: 2 },
-        { title: "命运卡 · 命运拥抱", desc: "和{target}拥抱 30 秒，并分享一件最近让你开心的事。", pts: 2, sec: 30 },
-        { title: "命运卡 · 交换角色", desc: "下一次选择任务时，由对方从可选任务类型中替你选择。", pts: 2 },
-        { title: "命运卡 · 小小惊喜", desc: "给{target}一个不花钱的小惊喜，可以是一句情话、一个拥抱或一段即兴表演。", pts: 2 },
-      ],
-      // 起飞前：预热向羞耻（未能起飞时）
+      chance: [],
+      fate: [],
+      // 起飞前：预热（含原热身向 + 轻度 SM；已减少脱衣）
       shame: [
-        { title: "预热 · 脱掉一件", desc: "脱掉一件衣服（由对方指定是哪一件），并保持到自己成功起飞为止。", pts: 0 },
-        { title: "预热 · 自己脱给对方看", desc: "当着对方的面，慢慢脱掉一件贴身衣物，并保持展示姿势 15 秒。", pts: 0, sec: 15 },
-        { title: "预热 · 蒙眼帮对方脱衣", desc: "戴上眼罩，靠触摸帮对方脱掉一件衣服；若脱错位置，由对方纠正后继续。", pts: 0, sec: 30 },
-        { title: "预热 · 蒙眼找部位", desc: "戴上眼罩，在 20 秒内用手找到对方指定的一个身体部位（如锁骨、腰侧、大腿内侧等）并轻轻点一下。", pts: 0, sec: 20 },
-        { title: "预热 · 展示身体", desc: "把衣服掀开或褪下，向对方展示自己的{self_chest} 15 秒，期间不能用手遮挡。", pts: 0, sec: 15 },
-        { title: "预热 · 被摸不能动", desc: "站好或坐好不要乱动，让对方在你身上（非最敏感部位）抚摸 25 秒，你不能推开。", pts: 0, sec: 25 },
-        { title: "预热 · 舔手指", desc: "把对方的手指含进嘴里认真舔 15 秒，同时看着对方的眼睛。", pts: 0, sec: 15 },
-        { title: "预热 · 隔衣轻蹭", desc: "隔着衣服，用身体轻轻磨蹭对方 20 秒，保持眼神接触。", pts: 0, sec: 20 },
-        { title: "预热 · 嘴喂喝水", desc: "含一口水或酒，用嘴渡给对方；对方必须接住并咽下。可重复 2～3 次。", pts: 0, sec: 30 },
         { title: "预热 · 主动湿吻", desc: "你主动吻上对方，做一次深入的湿吻，持续 30 秒，中途不要分开。", pts: 0, sec: 30 },
-        { title: "预热 · 轻打屁股", desc: "趴好或弯腰，让对方在你屁股上拍打 10 下（力度由对方控制，保持轻微 SM）。每一下你都要报数。", pts: 0 },
+        { title: "预热 · 耳边骚话", desc: "贴在对方耳边，说三句你现在想对TA做的具体事情。", pts: 0 },
+        { title: "预热 · 任摸大腿", desc: "站好或坐好不要躲，让对方从你的膝盖摸到大腿根附近 30 秒。", pts: 0, sec: 30 },
+        { title: "预热 · 献上锁骨", desc: "自己把锁骨和脖子露出，让对方亲吻或舔 20 秒，你不能推开。", pts: 0, sec: 20 },
+        { title: "预热 · 蒙眼找部位", desc: "戴上眼罩，在 20 秒内用手找到对方指定的一个身体部位并轻轻点一下。", pts: 0, sec: 20 },
+        { title: "预热 · 被摸不能动", desc: "站好或坐好不要乱动，让对方在你身上抚摸 25 秒，你不能推开。", pts: 0, sec: 25 },
+        { title: "预热 · 舔手指", desc: "把对方的手指含进嘴里认真舔 15 秒，同时看着对方的眼睛。", pts: 0, sec: 15 },
+        { title: "预热 · 隔衣轻蹭", desc: "隔着衣服，用身体对准对方敏感处轻轻磨蹭 20 秒。", pts: 0, sec: 20 },
+        { title: "预热 · 嘴喂喝水", desc: "含一口水或酒，用嘴渡给对方；对方必须接住并咽下。可重复 2～3 次。", pts: 0, sec: 30 },
+        { title: "预热 · 轻打屁股", desc: "趴好或弯腰，让对方在你屁股上拍打 10 下（力度由对方控制）。每一下你都要报数。", pts: 0 },
         { title: "预热 · 掐脖深吻", desc: "让对方一只手轻轻掐住你的脖子（不要用力到影响呼吸），同时深吻 20 秒。", pts: 0, sec: 20 },
-        { title: "预热 · 说句喜欢", desc: "看着对方说一句你平时不太好意思说的喜欢或感谢。", pts: 0 },
-        { title: "预热 · 手心写字", desc: "在对方手心写一个字或画一个符号，让对方猜是什么。", pts: 0 },
-        { title: "预热 · 背后拥抱", desc: "从对方同意的方向轻轻抱住对方 15 秒。", pts: 0, sec: 15 },
-        { title: "预热 · 选首情歌", desc: "为对方选一首代表你们关系的歌，并解释为什么选它。", pts: 0 },
-        { title: "预热 · 猜猜我想要", desc: "说出一个此刻想要的温柔互动，让对方猜是什么；猜错可以给一次提示。", pts: 0 },
-        { title: "预热 · 脸颊亲亲", desc: "得到对方同意后，在脸颊上亲三下。", pts: 0 },
+        { title: "预热 · 跪姿待命", desc: "跪在对方面前，双手背后，抬头看对方 20 秒，未经允许不能动。", pts: 0, sec: 20 },
+        { title: "预热 · 口中衔物", desc: "用嘴轻轻咬住对方的手指或衣角 15 秒，期间用眼神看对方。", pts: 0, sec: 15 },
+        { title: "预热 · 命令三选一", desc: "对方给出三个轻度指令（如转一圈、报称呼、伸舌头），你必须选一个立刻完成。", pts: 0 },
+        { title: "预热 · 面壁手撑", desc: "双手撑墙或趴低，让对方从身后贴着你耳语或轻拍屁股 20 秒。", pts: 0, sec: 20 },
       ]
     };
 
-    // 性别专属任务独立存放，不在同一张任务卡里混写男女两套描述。
-    // 通用任务仍保留在 TASKS；抽取时会按当前玩家的性别合并对应任务池。
+    // 性别专属 + 终极任务（到达终点时触发）
     const GENDER_TASKS = {
       female: {
         hot: [
-          { title: "高热 · 女方专属足部侍奉", desc: "在对方明确同意后，用双脚轻柔地刺激对方的私密部位 60 秒；随时确认对方是否舒服。", pts: 3, sec: 60 }
+          { title: "高热 · 女方足交侍奉", desc: "用双脚夹住并摩擦对方的阴茎，足交至少 60 秒；可加油并观察对方反应。", pts: 3, sec: 60 },
+          { title: "高热 · 女方口侍加码", desc: "为对方{oral_give} 90 秒，并按对方要求调整节奏与方式。", pts: 3, sec: 90 },
         ],
         shame: [
-          { title: "预热 · 女方专属展示", desc: "在对方同意后，选择舒服的姿势向对方展示自己的私密部位 15 秒；不想继续时可以随时暂停。", pts: 0, sec: 15 }
-        ]
+          { title: "预热 · 女方展示私处", desc: "用手轻轻分开，向对方展示自己的小穴 15 秒，并看着对方的眼睛。", pts: 0, sec: 15 },
+        ],
+        // 终极任务：仅插入式
+        ultimate: [
+          { title: "终极 · 女方骑乘插入", desc: "你骑乘在对方身上主导抽插至少 3 分钟；对方不得擅自换姿势。", pts: 6, sec: 180 },
+          { title: "终极 · 女方后入承受", desc: "后入体位由对方抽插 3 分钟；你边承受边说感受，不能要求换姿势。", pts: 6, sec: 180 },
+          { title: "终极 · 女方传教士抬腿", desc: "传教士并抬起双腿，由对方深入抽插 3 分钟。", pts: 6, sec: 180 },
+          { title: "终极 · 女方坐莲研磨", desc: "面对面坐姿插入（坐莲），保持研磨或抽送 2 分钟。", pts: 6, sec: 120 },
+        ],
       },
       male: {
         hot: [
-          { title: "高热 · 男方专属节奏挑战", desc: "在双方同意的前提下，由你按照对方给出的节奏提示进行自我抚慰 30 秒；不舒服或不想继续时可以随时暂停。", pts: 3, sec: 30 }
+          { title: "高热 · 男方节奏自慰", desc: "按对方给出的节奏自我抚慰 40 秒，不能提前停。", pts: 3, sec: 40 },
+          { title: "高热 · 男方口侍加码", desc: "为对方{oral_give} 90 秒，并按对方要求调整节奏与方式。", pts: 3, sec: 90 },
         ],
         shame: [
-          { title: "预热 · 男方专属展示", desc: "在对方同意后，选择舒服的姿势向对方展示自己的私密部位 15 秒；不想继续时可以随时暂停。", pts: 0, sec: 15 }
-        ]
+          { title: "预热 · 男方展示肉棒", desc: "握住并展示自己的阴茎 15 秒，让对方仔细看，不能用手遮挡。", pts: 0, sec: 15 },
+        ],
+        // 终极任务：仅插入式（已去除边缘忍耐）
+        ultimate: [
+          { title: "终极 · 男方后入主导", desc: "你用后入体位抽插对方 3 分钟；节奏以对方感受为准，中途不可换姿势。", pts: 6, sec: 180 },
+          { title: "终极 · 男方传教士深插", desc: "传教士体位深入抽插 3 分钟；可抬起对方双腿，注意力度。", pts: 6, sec: 180 },
+          { title: "终极 · 男方站立抱干", desc: "尽量以站立或半靠姿势进入对方 2 分钟；累了可改为靠墙支撑。", pts: 6, sec: 120 },
+          { title: "终极 · 男方侧卧插入", desc: "侧卧或汤匙式插入抽送 2 分钟，保持贴近。", pts: 6, sec: 120 },
+        ],
       }
     };
 
@@ -687,10 +678,18 @@
       if (idx === BLUE_START) return "start-blue";
       if (idx === RED_HOME_ENTRY) return "home-red";
       if (idx === BLUE_HOME_ENTRY) return "home-blue";
-      // 已取消机会卡 / 命运卡
-      const zone = idx % 10;
-      // 棋盘上不再出现热身格，只保留升温 / 高热
-      if (zone < 5) return "warm";
+      // 普通格子不再固定温/热，刺激度由离起点距离决定
+      return "path";
+    }
+
+    // 根据当前玩家相对起点的路程决定任务刺激度：越远越刺激
+    function intensityByDistance(pid, pos) {
+      // 棋盘已无热身档：前半升温，后半高热；热身只出现在起飞前预热
+      if (pos < 0 || pos >= 100) return "hot";
+      const start = pid === "p1" ? RED_START : BLUE_START;
+      const dist = (pos - start + OUTER_LEN) % OUTER_LEN;
+      const ratio = dist / OUTER_LEN;
+      if (ratio < 0.5) return "warm";
       return "hot";
     }
 
@@ -829,7 +828,7 @@
       $("turn-hint").textContent = hint;
       $("info-p1").classList.toggle("active", state.current === "p1");
       $("info-p2").classList.toggle("active", state.current === "p2");
-      $("btn-roll").disabled = state.canMove;
+      $("btn-roll").disabled = state.canMove || !!state.pendingWin || !!(state.pendingTask && state.pendingTask.type === "ultimate") || !!state.gameOver;
       $("action-hint").textContent = "掷骰后飞机将自动前进；在基地需掷出 6 点才能起飞";
       saveGame();
     }
@@ -859,8 +858,7 @@
         if (type === "start-red" || type === "start-blue") cell.textContent = "起";
         else if (type === "home-red") cell.textContent = "→";
         else if (type === "home-blue") cell.textContent = "←";
-        else if (type === "warm") cell.textContent = "温";
-        else if (type === "hot") cell.textContent = "热";
+        // 普通格不标温/热，刺激度由路程决定
         board.appendChild(cell);
       });
       RED_HOME.forEach((pos, i) => {
@@ -1030,10 +1028,9 @@
         const homePos = pos - 100; // 0 ~ HOME_LEN-1
         const target = homePos + steps;
         if (target === HOME_LEN) {
-          // 精确到达终点
+          // 精确到达终点：先终极任务，完成后再结算胜利
           p.pieces[idx] = 999;
           addLog(`🎉 ${p.name} 的一架飞机到达终点！`);
-          checkWin(pid);
           afterMove(pid, idx, 999);
         } else if (target < HOME_LEN) {
           // 正常前进
@@ -1069,7 +1066,6 @@
           if (remaining === HOME_LEN) {
             p.pieces[idx] = 999;
             addLog(`🎉 ${p.name} 的一架飞机到达终点！`);
-            checkWin(pid);
             afterMove(pid, idx, 999);
             return;
           } else if (remaining < HOME_LEN) {
@@ -1114,14 +1110,31 @@
       if (pos === 999) {
         state[pid].pts += 5;
         updateUI();
-        addLog(`${state[pid].name} 到达终点 +5pt`);
-        setTimeout(nextTurn, 600);
+        addLog(`${state[pid].name} 到达终点 +5pt，触发终极任务！`);
+        state.pendingWin = pid;
+        setTimeout(() => triggerUltimate(pid), 400);
         return;
       }
-      if (pos >= 100) { triggerTask("hot"); return; } // 终点跑道全部高热
+      // 任一方进入终点跑道后，双方任务一律改为跑道插入任务
+      if (pos >= 100 || isAnyoneOnRunway()) {
+        if (pos >= 100) addLog(`${state[pid].name} 在终点跑道，触发插入任务`);
+        else addLog(`已有人进入终点跑道，全员任务切换为跑道插入任务`);
+        triggerTask("sex");
+        return;
+      }
       const type = getOuterType(pos);
       if (type.startsWith("start")) setTimeout(nextTurn, 400);
-      else triggerTask(type === "warm" ? "warm" : "hot");
+      else {
+        const level = intensityByDistance(pid, pos);
+        addLog(`路程刺激度：${level === "warm" ? "升温" : "高热"}`);
+        triggerTask(level);
+      }
+    }
+
+    function isAnyoneOnRunway() {
+      const a = state.p1.pieces[0];
+      const b = state.p2.pieces[0];
+      return (a >= 100 && a !== 999) || (b >= 100 && b !== 999);
     }
 
     function checkWin(pid) {
@@ -1203,19 +1216,44 @@
         setTimeout(nextTurn, 500);
         return;
       }
+      const actorPid = state.current;
+      const targetPid = state.current === "p1" ? "p2" : "p1";
+      const targetGender = state[targetPid].gender;
       // 通用池与对应性别专属池分开维护，再按当前玩家的性别组合抽取。
       let list = (TASKS[type] || TASKS.cool).filter(t => !t.femaleOnly && !t.maleOnly).slice();
       const genderPool = GENDER_TASKS[cur.gender] && GENDER_TASKS[cur.gender][type];
       if (Array.isArray(genderPool)) list = list.concat(genderPool);
-      // 男性玩家过滤不适用的边缘类任务。
+      // 男性玩家过滤边缘类；深喉仅当对方为男；细致舔弄仅当对方为女
       if (cur.gender === "male") list = list.filter(t => !t.title.includes("边缘"));
-      if (list.length === 0) list = (TASKS[type] || TASKS.cool).filter(t => !t.femaleOnly && !t.maleOnly);
+      list = list.filter(t => !t.needMaleTarget || targetGender === "male");
+      list = list.filter(t => !t.needFemaleTarget || targetGender === "female");
+      if (list.length === 0) {
+        list = (TASKS[type] || TASKS.cool).filter(t =>
+          !t.femaleOnly && !t.maleOnly &&
+          (!t.needMaleTarget || targetGender === "male") &&
+          (!t.needFemaleTarget || targetGender === "female")
+        );
+      }
       const task = pickTaskWithPriority(list);
-      const actorPid = state.current;
-      const targetPid = state.current === "p1" ? "p2" : "p1";
       const desc = genderize(task.desc, actorPid, targetPid);
       state.pendingTask = { ...task, type, target: state.current };
       showTaskModal(task, type, desc);
+    }
+
+    // 到达终点：按性别抽取终极任务
+    function triggerUltimate(pid) {
+      const p = state[pid];
+      const pool = (GENDER_TASKS[p.gender] && GENDER_TASKS[p.gender].ultimate) || [];
+      if (pool.length === 0) {
+        checkWin(pid);
+        return;
+      }
+      const task = pool[Math.floor(Math.random() * pool.length)];
+      const actorPid = pid;
+      const targetPid = pid === "p1" ? "p2" : "p1";
+      const desc = genderize(task.desc, actorPid, targetPid);
+      state.pendingTask = { ...task, type: "ultimate", target: pid };
+      showTaskModal(task, "ultimate", desc);
     }
 
     function triggerCard(kind) {
@@ -1263,6 +1301,8 @@
     function showTaskModal(task, type, desc) {
       const typeMap = {
         cool: ["热身", "cool"], warm: ["升温", "warm"], hot: ["高热", "hot"],
+        sex: ["跑道插入", "hot"],
+        ultimate: ["终极任务", "special"],
         chance: ["机会卡", "card"], fate: ["命运卡", "card"],
         punish: ["火热惩罚", "special"],
         shame: ["预热羞耻", "warm"],
@@ -1275,10 +1315,13 @@
       $("task-points").textContent = task.pts > 0 ? `完成可获得 ${task.pts} 积分` : "这是一次惩罚任务";
 
       const isShame = type === "shame";
+      const isUltimate = type === "ultimate";
       const canRedraw = isShame && state.pendingTask && !state.pendingTask.redrawn;
-      $("btn-abandon").style.display = isShame ? "none" : "";
+      $("btn-abandon").style.display = (isShame || isUltimate) ? "none" : "";
       $("btn-redraw").style.display = canRedraw ? "" : "none";
-      $("task-hint").textContent = isShame
+      $("task-hint").textContent = isUltimate
+        ? "终极任务：到达终点后必须完成，完成后结算胜利"
+        : isShame
         ? (canRedraw ? "起飞前预热羞耻：不能放弃，可重抽一次" : "已重抽过，必须完成此预热惩罚")
         : "放弃：随机倒退1～3格 + 抽一张火热惩罚卡";
 
@@ -1371,6 +1414,12 @@
         setTimeout(() => triggerTask("hot"), 300);
         return;
       }
+      if (t.type === "ultimate" || state.pendingWin) {
+        const winPid = state.pendingWin || t.target;
+        state.pendingWin = null;
+        checkWin(winPid);
+        return;
+      }
       nextTurn();
     }
 
@@ -1380,6 +1429,10 @@
       if (!t) { nextTurn(); return; }
       if (t.type === "shame") {
         alert("预热羞耻不能放弃，只能重抽一次");
+        return;
+      }
+      if (t.type === "ultimate") {
+        alert("终极任务不能放弃，必须完成才能结算胜利");
         return;
       }
       if (state.timerId) { clearInterval(state.timerId); state.timerId = null; }
@@ -1666,13 +1719,13 @@
         1. 斜对角双人：红（左上）vs 蓝（右下）<br>
         2. 每人 1 架飞机，掷 6 起飞；没起飞又没出 6 → 羞耻惩罚卡<br>
         3. 外圈顺时针 → 彩色箭头处拐入终点跑道 → 中心终点<br>
-        4. 终点跑道点数超过会倒退；跑道格子全是高热<br>
+        4. 终点跑道点数超过会倒退；跑道格子触发性爱姿势任务（带计时）<br>
         5. 可放弃任务：随机倒退1～3格并抽一张惩罚卡<br>
         6. 连续5次未起飞将保底起飞<br>
         7. 积分可兑换特权、双倍积分卡和角色扮演称呼；强制倒退会随机倒退1～6格<br>
         8. 随时可用安全词停止<br><br>
-        格子：温=升温 / 热=高热（已无热身格）<br>
-        「温」=升温 「热」=高热 「→/←」=终点入口（已取消机会/命运卡）
+        外圈格子不再标注温/热：刺激度由离自己起点的距离决定（越远越高热）<br>
+        外圈前半=升温 · 后半=高热（已无热身格）· 起飞失败=预热 · 终点跑道=性爱 · 终点=终极
       `;
       $("modal-info").classList.add("show");
     }
